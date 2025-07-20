@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _agreedToTerms = prefs.getBool("agreedToTerms") ?? false;
     });
-    if (!_agreedToTerms) {
+    if (!_agreedToTerms && mounted) {
       showFDialog(
         context: context,
         builder: (context, style, animation) => FDialog(
