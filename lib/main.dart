@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,6 +70,18 @@ class _MyHomePageState extends State<MyHomePage> {
     if (!_agreedToTerms && mounted) {
       showFDialog(
         context: context,
+        style: context.theme.dialogStyle.copyWith(
+          barrierFilter: (animation) => ImageFilter.compose(
+            outer: ImageFilter.blur(
+              sigmaX: animation * 5,
+              sigmaY: animation * 5,
+            ),
+            inner: ColorFilter.mode(
+              context.theme.colors.barrier,
+              BlendMode.srcOver,
+            ),
+          ),
+        ),
         builder: (context, style, animation) => FDialog(
           style: style,
           animation: animation,
