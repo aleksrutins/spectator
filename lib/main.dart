@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> loadTerms() async {
-    var prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     setState(() {
       _agreedToTerms = prefs.getBool("agreedToTerms") ?? false;
     });
@@ -105,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> agreeToTerms() async {
-    var prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     setState(() {
       _agreedToTerms = true;
       prefs.setBool("agreedToTerms", true);
