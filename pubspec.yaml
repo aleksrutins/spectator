@@ -38,7 +38,6 @@ dependencies:
   shared_preferences: ^2.5.3
   network_info_plus: ^6.1.4
   ping_discover_network_forked: ^0.0.1
-  worker_manager: ^7.2.6
 
 dev_dependencies:
   flutter_test:

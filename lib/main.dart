@@ -1,15 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spectator/pages/scan.dart';
-import 'package:worker_manager/worker_manager.dart';
 
 void main() async {
-  workerManager.log = true;
-  await workerManager.init();
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
