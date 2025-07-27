@@ -1,0 +1,16 @@
+[package]
+name = "rust_lib_spectator"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+flutter_rust_bridge = "=2.11.1"
+ipnet = "2.11.0"
+netdev = "0.36.0"
+netscan = "0.29.0"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }

@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spectator/pages/scan.dart';
+import 'package:spectator/src/rust/frb_generated.dart';
 
 void main() async {
+  await RustLib.init();
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }

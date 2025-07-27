@@ -1,11 +1,11 @@
 import 'dart:isolate';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:ping_discover_network_forked/ping_discover_network_forked.dart';
+import 'package:spectator/src/rust/api/net.dart';
+import 'package:spectator/src/rust/frb_generated.dart';
 
 class ScanPage extends StatefulWidget {
   const ScanPage({super.key});
@@ -22,7 +22,7 @@ class _Device {
 }
 
 class _ScanPageState extends State<ScanPage> {
-  List<_Device> _devices = [];
+  final List<_Device> _devices = [];
   bool _scanning = false;
 
   void scanNetwork() async {
@@ -31,44 +31,15 @@ class _ScanPageState extends State<ScanPage> {
       _devices.clear(); // Clear previous results
     });
 
-    // Get IP on main thread first
-    final String ip = (await NetworkInfo().getWifiIP())!;
-    final String subnet = ip.substring(0, ip.lastIndexOf('.'));
-    final int port = 80;
+    final hosts = await scanHosts();
 
-    final rp = ReceivePort();
-    rp.listen((message) {
-      setState(() {
-        if (message == "done") {
-          _scanning = false;
-          rp.close();
-          return;
-        }
-        _devices.add(
-          _Device(name: message, ip: message, manufacturer: "Unknown"),
-        );
-      });
+    setState(() {
+      _devices.addAll(
+        hosts.entries.map(
+          (e) => _Device(name: e.value, ip: e.key, manufacturer: "Unknown"),
+        ),
+      );
     });
-
-    // Pass subnet to isolate instead of getting IP inside isolate
-    Isolate.spawn((Map<String, dynamic> args) async {
-      final SendPort send = args['sendPort'];
-      final String subnet = args['subnet'];
-      final int port = args['port'];
-
-      print("scanning subnet: $subnet");
-
-      final stream = NetworkAnalyzer.discover2(subnet, port);
-
-      await for (NetworkAddress addr in stream) {
-        if (addr.exists) {
-          print(addr.ip);
-          send.send(addr.ip);
-        }
-      }
-
-      send.send("done");
-    }, {'sendPort': rp.sendPort, 'subnet': subnet, 'port': port});
   }
 
   @override
