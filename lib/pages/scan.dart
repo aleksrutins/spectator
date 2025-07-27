@@ -39,6 +39,7 @@ class _ScanPageState extends State<ScanPage> {
           (e) => _Device(name: e.value, ip: e.key, manufacturer: "Unknown"),
         ),
       );
+      _scanning = false;
     });
   }
 

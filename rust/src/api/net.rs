@@ -3,7 +3,7 @@ use std::{collections::HashMap, net::IpAddr, thread, time::Duration};
 use ipnet::Ipv4Net;
 use netscan::{
     host::Host,
-    scan::{result::ScanResult, scanner::HostScanner, setting::HostScanSetting},
+    scan::{scanner::HostScanner, setting::HostScanSetting},
 };
 
 pub fn scan_hosts() -> HashMap<String, String> {
@@ -11,6 +11,7 @@ pub fn scan_hosts() -> HashMap<String, String> {
     let mut scan_setting = HostScanSetting::default()
         .set_if_index(iface.index)
         .set_scan_type(netscan::scan::setting::HostScanType::IcmpPingScan)
+        .set_async_scan(false)
         .set_timeout(Duration::from_secs(2))
         .set_wait_time(Duration::from_millis(500));
 
@@ -27,9 +28,9 @@ pub fn scan_hosts() -> HashMap<String, String> {
     let scanner = HostScanner::new(scan_setting);
     let _rx = scanner.get_progress_receiver();
 
-    let handle = thread::spawn(move || scanner.scan());
-
-    let result = handle.join().unwrap();
+    println!("starting scan");
+    let result = scanner.scan();
+    println!("finished scan");
 
     result.hosts.iter().map(|h| (h.ip_addr.to_string(), h.hostname.clone())).collect()
 }
