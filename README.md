@@ -1,10 +1,10 @@
 # spectator
 
-A new Flutter project.
+Network utilities for the 2025 Ubuntu Flutter Community desktop app jam, created by Aleks Rutins.
 
 ## Notes on Running
 
-This project requires an external binary (`scan-hosts`); in order to make it work, you can either install the package in the `rust` directory, or set the `SCAN_HOSTS_PATH` environment variable:
+This project requires an external binary (`scan-hosts`); in order to make it work, you can either install the package in the `rust` directory (or install the binary from the tarball, if downloading from Itch.io), or set the `SCAN_HOSTS_PATH` environment variable:
 
 ```sh
 export SCAN_HOSTS_PATH=$(pwd)/rust/target/debug/scan-hosts

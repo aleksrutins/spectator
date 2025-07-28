@@ -48,3 +48,6 @@ app.*.map.json
 .fvm/
 
 .cache/
+
+bundle-out/
+/spectator.zip
