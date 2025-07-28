@@ -1,4 +1,4 @@
-use std::{collections::HashMap, net::IpAddr, thread, time::Duration};
+use std::{collections::HashMap, env, net::IpAddr, os, process::Command, thread, time::Duration};
 
 use ipnet::Ipv4Net;
 use netscan::{
@@ -28,9 +28,16 @@ pub fn scan_hosts() -> HashMap<String, String> {
     let scanner = HostScanner::new(scan_setting);
     let _rx = scanner.get_progress_receiver();
 
-    println!("starting scan");
     let result = scanner.scan();
-    println!("finished scan");
 
     result.hosts.iter().map(|h| (h.ip_addr.to_string(), h.hostname.clone())).collect()
+}
+
+pub fn scan_hosts_elevate() -> HashMap<String, String> {
+    let bin_path = env::var("SCAN_HOSTS_PATH").unwrap_or_else(|_| "scan-hosts".to_string());
+
+    let run = Command::new("pkexec").args(&["--disable-internal-agent", &bin_path]).output().unwrap();
+    println!("{}",str::from_utf8(&run.stdout).unwrap());
+
+    serde_json::from_str(str::from_utf8(&run.stdout).unwrap()).unwrap()
 }

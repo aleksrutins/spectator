@@ -8,3 +8,6 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 Future<Map<String, String>> scanHosts() =>
     RustLib.instance.api.crateApiNetScanHosts();
+
+Future<Map<String, String>> scanHostsElevate() =>
+    RustLib.instance.api.crateApiNetScanHostsElevate();

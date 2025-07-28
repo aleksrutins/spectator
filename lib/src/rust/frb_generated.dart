@@ -67,7 +67,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 234874603;
+  int get rustContentHash => 1489325968;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -83,6 +83,8 @@ abstract class RustLibApi extends BaseApi {
   Future<void> crateApiSimpleInitApp();
 
   Future<Map<String, String>> crateApiNetScanHosts();
+
+  Future<Map<String, String>> crateApiNetScanHostsElevate();
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -169,6 +171,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiNetScanHostsConstMeta =>
       const TaskConstMeta(debugName: "scan_hosts", argNames: []);
+
+  @override
+  Future<Map<String, String>> crateApiNetScanHostsElevate() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 4,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_Map_String_String_None,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiNetScanHostsElevateConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiNetScanHostsElevateConstMeta =>
+      const TaskConstMeta(debugName: "scan_hosts_elevate", argNames: []);
 
   @protected
   Map<String, String> dco_decode_Map_String_String_None(dynamic raw) {

@@ -31,7 +31,7 @@ class _ScanPageState extends State<ScanPage> {
       _devices.clear(); // Clear previous results
     });
 
-    final hosts = await scanHosts();
+    final hosts = await scanHostsElevate();
 
     setState(() {
       _devices.addAll(
@@ -45,45 +45,52 @@ class _ScanPageState extends State<ScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      spacing: 6,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Network Scan",
-          style: FTheme.of(
-            context,
-          ).typography.lg.copyWith(fontWeight: FontWeight.bold),
+    return LayoutBuilder(
+      builder: (context, viewportConstraints) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: viewportConstraints.maxHeight),
+          child: Column(
+            spacing: 6,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Network Scan",
+                style: FTheme.of(
+                  context,
+                ).typography.lg.copyWith(fontWeight: FontWeight.bold),
+              ),
+              FButton(
+                prefix: _scanning ? const FProgress.circularIcon() : null,
+                onPress: _scanning
+                    ? null
+                    : () {
+                        scanNetwork();
+                      },
+                child: Text("Scan"),
+              ),
+              DataTable(
+                columns: const [
+                  DataColumn(label: Text("Name")),
+                  DataColumn(label: Text("IP")),
+                  DataColumn(label: Text("Manufacturer")),
+                ],
+                rows: _devices
+                    .map(
+                      (device) => DataRow(
+                        cells: [
+                          DataCell(Text(device.name)),
+                          DataCell(Text(device.ip)),
+                          DataCell(Text(device.manufacturer)),
+                        ],
+                      ),
+                    )
+                    .toList(),
+              ),
+            ],
+          ),
         ),
-        FButton(
-          prefix: _scanning ? const FProgress.circularIcon() : null,
-          onPress: _scanning
-              ? null
-              : () {
-                  scanNetwork();
-                },
-          child: Text("Scan"),
-        ),
-        DataTable(
-          columns: const [
-            DataColumn(label: Text("Name")),
-            DataColumn(label: Text("IP")),
-            DataColumn(label: Text("Manufacturer")),
-          ],
-          rows: _devices
-              .map(
-                (device) => DataRow(
-                  cells: [
-                    DataCell(Text(device.name)),
-                    DataCell(Text(device.ip)),
-                    DataCell(Text(device.manufacturer)),
-                  ],
-                ),
-              )
-              .toList(),
-        ),
-      ],
+      ),
     );
   }
 }
